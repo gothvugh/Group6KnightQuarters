@@ -1,14 +1,12 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import React from 'react';
+import { Text, View, StyleSheet, Button } from 'react-native';
 
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Registration</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/two.tsx" />
+      <Text style={styles.title}>Please Log In</Text>
+      <Text style={styles.description}>To access more features, please log in or register.</Text>
+      <Button title="Go to Registration" onPress={() => {/* Navigate to registration screen */}} />
     </View>
   );
 }
@@ -16,16 +14,18 @@ export default function TabTwoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 10,
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  description: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 20,
   },
 });

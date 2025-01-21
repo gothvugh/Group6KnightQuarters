@@ -1,12 +1,28 @@
-import { View, Text, StyleSheet, TextInput, Button } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
-      <TextInput style={styles.input} placeholder="Email" />
-      <TextInput style={styles.input} placeholder="Password" secureTextEntry />
-      <Button title="Login" onPress={() => console.log("Login pressed")} />
+      <Text style={styles.logo}>KQ</Text>
+      <Text style={styles.subtitle}>UNIVERSITY OF CENTRAL FLORIDA</Text>
+      <Text style={styles.welcome}>Welcome</Text>
+
+      <TextInput style={styles.input} placeholder="UCF Email" placeholderTextColor="#999" />
+      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#999" secureTextEntry />
+
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/connections')}>
+  <Text style={styles.buttonText}>Login</Text>
+</TouchableOpacity>
+
+      <Text style={styles.footerText}>
+        Don’t have an account?{' '}
+        <Text style={styles.link} onPress={() => router.push('/auth/signup')}>
+          Register here
+        </Text>
+      </Text>
     </View>
   );
 }
@@ -14,21 +30,50 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
-  title: {
+  logo: {
+    fontSize: 60,
+    fontWeight: 'bold',
+    color: '#E9C46A',
+  },
+  subtitle: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 20,
+  },
+  welcome: {
     fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
     marginBottom: 20,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    width: '80%',
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: '#f3f3f3',
+    borderRadius: 8,
+  },
+  button: {
+    backgroundColor: '#E9C46A',
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  footerText: {
+    marginTop: 20,
+    color: '#666',
+  },
+  link: {
+    color: '#E9C46A',
+    fontWeight: 'bold',
   },
 });
