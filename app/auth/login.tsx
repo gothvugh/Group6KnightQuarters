@@ -1,13 +1,13 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import KQLogo from '@/components/KQLogo'
 
 export default function LoginScreen() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>KQ</Text>
-      <Text style={styles.subtitle}>UNIVERSITY OF CENTRAL FLORIDA</Text>
+      <KQLogo path="app/(tabs)/login.tsx"/>
       <Text style={styles.welcome}>Welcome</Text>
 
       <TextInput style={styles.input} placeholder="UCF Email" placeholderTextColor="#999" />
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
     backgroundColor: '#fff',
   },
   logo: {
