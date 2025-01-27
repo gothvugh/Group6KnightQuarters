@@ -15,6 +15,22 @@ export default function DiscoverScreen() {
     'Anthropology',
   ];
 
+  const groups = [
+    {
+      id: '1',
+      name: 'ROTC',
+      members: '3.6k members',
+      description:
+        'Army ROTC is a program designed to develop individual leadership skills for either military or civilian career.',
+    },
+    {
+      id: '2',
+      name: 'KQR',
+      members: '5.8k members',
+      description:
+        'KQR is Knights Experiential Robotics, a club for introducing Knights to real-world robotics.',
+    },
+  ]; // for backend development, the sample data will be replaced with a SQL query that connects to the database
 
   return (
     <View style={styles.container}>
@@ -39,7 +55,33 @@ export default function DiscoverScreen() {
     </View>
 
       {/* Based on Groups Section */}
+      <View>
       <Text style={styles.sectionTitle}>Based on Groups you might like</Text>
+      {groups.map((group) => (
+        <View key={group.id} style={styles.card}>
+          {/* Icon Section */}
+          <View style={styles.iconContainer}>
+            <View style={styles.icon}>
+              <Text style={styles.iconText}>👤</Text>
+            </View>
+          </View>
+
+          {/* Group Info Section */}
+          <View style={styles.infoContainer}>
+            <Text style={styles.groupName}>
+              {group.name} <Text style={styles.members}>{group.members}</Text>
+            </Text>
+            <Text style={styles.description}>{group.description}</Text>
+          </View>
+
+          {/* Join Button */}
+          <TouchableOpacity style={styles.joinButton}>
+            <Text style={styles.joinButtonText}>Join</Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+        
+      </View>
       
 
       {/* Trending Section */}
@@ -102,6 +144,64 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#black',
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  iconContainer: {
+    marginRight: 15,
+  },
+  icon: {
+    backgroundColor: '#E0D6FF',
+    borderRadius: 50,
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconText: {
+    fontSize: 20,
+    color: '#7F56D9',
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  groupName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  members: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: '#6E6E6E',
+  },
+  description: {
+    fontSize: 14,
+    color: '#6E6E6E',
+  },
+  joinButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    alignSelf: 'flex-start',
+  },
+  joinButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   trendingCard: {
     padding: 15,
