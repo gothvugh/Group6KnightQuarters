@@ -33,16 +33,10 @@ export default function CreatePostScreen() {
           multiline
         />
       </View>
-      <Text style={styles.saveDraft}>Save Draft</Text>
+      <TouchableOpacity>
+        <Text style={styles.saveDraft}>Save Draft</Text>
+      </TouchableOpacity>
 
-      {/* Bottom Icon Toolbar */}
-      <View style={styles.toolbar}>
-        <Ionicons name="image" size={24} color="gray" />
-        <Ionicons name="link" size={24} color="gray" />
-        <Ionicons name="location" size={24} color="gray" />
-        <Ionicons name="musical-notes" size={24} color="gray" />
-        <Ionicons name="ellipsis-horizontal" size={24} color="gray" />
-      </View>
     </View>
   );
 }
