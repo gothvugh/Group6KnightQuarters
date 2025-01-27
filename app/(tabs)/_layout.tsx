@@ -71,6 +71,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
         }}
       />
+      <Tabs.Screen 
+        name="create"
+        options={{
+          title: 'Create',
+          tabBarIcon: ({color}) => <TabBarIcon name="plus-circle" color={color} />,
+        }}
+        />
       <Tabs.Screen
         name="search"
         options={{
