@@ -8,13 +8,14 @@ import {
   ScrollView
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import KQLogo from '@/components/KQLogo';
 
 export default function HomeScreen() {
   return (
     <View style={styles.container}>
+      <KQLogo path="app/(tabs)/discover.tsx"/>
       {/* Header with Logo and Search Bar */}
       <View style={styles.header}>
-        <Text style={styles.logo}>KQ</Text>
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
           <TextInput
