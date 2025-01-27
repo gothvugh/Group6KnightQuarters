@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TextInput } from 'react-native';
+import KQLogo from '@/components/KQLogo';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const posts = [
   {
@@ -53,30 +55,45 @@ export default function ConnectionsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.searchBar} placeholder="Search..." />
+    <ScrollView style={styles.container}>
+      <KQLogo path="app/(tabs)/discover.tsx"/>
+      {/* Header Section */}
+      <View style={styles.header}>
+          <View style={styles.tabContainer}>
+              <Text style={[styles.tab, styles.activeTab]}>Connections</Text>
+              <Text style={styles.tab}>Discover</Text>
+            </View>
+      </View>
       <FlatList
         data={posts}
         renderItem={renderPost}
         keyExtractor={(item) => item.id} // Ensure each post has a unique id
         contentContainerStyle={styles.listContainer}
       />
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#fff',
   },
-  searchBar: {
-    height: 50,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    margin: 10,
+  header: {
+    alignItems: 'center',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  tab: {
+    fontSize: 16,
+    marginHorizontal: 10,
+    color: '#A0A0A0',
+  },
+  activeTab: {
+    fontWeight: 'bold',
+    color: '#000',
   },
   listContainer: {
     padding: 10,

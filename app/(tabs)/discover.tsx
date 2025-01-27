@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import KQLogo from '@/components/KQLogo';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function DiscoverScreen() {
   const communities = [
@@ -33,7 +34,7 @@ export default function DiscoverScreen() {
   ]; // for backend development, the sample data will be replaced with a SQL query that connects to the database
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <KQLogo path="app/(tabs)/discover.tsx"/>
 
       {/* Header Section */}
@@ -93,13 +94,13 @@ export default function DiscoverScreen() {
         </Text>
         <Text style={styles.trendingComments}>Comments (10)</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     paddingTop: 50,
