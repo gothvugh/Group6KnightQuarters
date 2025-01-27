@@ -1,16 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView, TextInput} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import KQLogo from '@/components/KQLogo';
-import NavBar from'@/components/NavBar';
 
 export default function DiscoverScreen() {
   const communities = [
     'Psychology',
     'Nursing',
     'Engineering',
-    'Poli Sci',
+    'Political Science',
     'Digital Media',
-    'Comp Sci',
+    'Computer Science',
     'Biology',
     'Graphic Design',
     'Anthropology',
@@ -31,50 +30,17 @@ export default function DiscoverScreen() {
 
       {/* Explore Communities */}
       <Text style={styles.sectionTitle}>Explore communities</Text>
-      <Text> I will get this to render later </Text>
-      <FlatList
-        data={communities}
-        horizontal
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.communityChip}>
-            <Text style={styles.communityText}>{item}</Text>
-          </TouchableOpacity>
-        )}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.communityList}
-      />
-
+      <View style={styles.listContainer}>
+      {communities.map((item, index) => (
+        <TouchableOpacity style={styles.item}>
+          <Text key={index} style={styles.itemText}>{item}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
 
       {/* Based on Groups Section */}
       <Text style={styles.sectionTitle}>Based on Groups you might like</Text>
-      <ScrollView style={styles.groupsSection}>
-        {[
-          {
-            name: 'ROTC',
-            members: '3.6k members',
-            description:
-              'Army ROTC is a program designed to develop individual leadership skills for either military or civilian careers.',
-          },
-          {
-            name: 'KQR',
-            members: '5.8k members',
-            description:
-              'KQR is Knights Experiential Robotics, which was a club established to introduce Knights to modern real-world robotics.',
-          },
-        ].map((group, index) => (
-          <View key={index} style={styles.groupCard}>
-            <View style={styles.groupInfo}>
-              <Text style={styles.groupName}>{group.name}</Text>
-              <Text style={styles.groupMembers}>{group.members}</Text>
-              <Text style={styles.groupDescription}>{group.description}</Text>
-            </View>
-            <TouchableOpacity style={styles.joinButton}>
-              <Text style={styles.joinButtonText}>Join</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+      
 
       {/* Trending Section */}
       <Text style={styles.sectionTitle}>Trending</Text>
@@ -85,8 +51,6 @@ export default function DiscoverScreen() {
         </Text>
         <Text style={styles.trendingComments}>Comments (10)</Text>
       </View>
-
-      <NavBar path="app/(tabs)/discover.tsx"/>
     </View>
   );
 }
@@ -120,64 +84,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  communityScroll: {
-    flex: 1,
+  listContainer: {
     flexDirection: 'row',
-    height: 50,
+    flexWrap: 'wrap', // Allows wrapping to the next line
+    gap: 10, // Adds spacing between items (requires React Native 0.71+)
   },
-  communityChip: {
-    backgroundColor: '#FFD700',
+  item: {
+    backgroundColor: '#FFD700', // UCF Gold
     borderRadius: 15,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginRight: 10,
-  },
-  communityText: {
-    fontSize: 14,
-    color: '#FFFFFF',
-  },
-  communityList: {
-    flexDirection: 'row',
+    paddingHorizontal: 10,
     paddingVertical: 5,
-  },
-  groupsSection: {
-    marginVertical: 10,
-  },
-  groupCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#F7F7F7',
-    borderRadius: 10,
+    marginRight: 10,
     marginBottom: 10,
-  },
-  groupInfo: {
-    flex: 1,
-    marginRight: 10,
-  },
-  groupName: {
-    fontSize: 16,
+    alignSelf: 'flex-start',
+  }, 
+  itemText: {
+    fontSize: 14,
     fontWeight: 'bold',
-  },
-  groupMembers: {
-    fontSize: 12,
-    color: '#A0A0A0',
-  },
-  groupDescription: {
-    fontSize: 14,
-    marginTop: 5,
-  },
-  joinButton: {
-    backgroundColor: '#FFD700',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  joinButtonText: {
-    fontSize: 14,
-    color: '#FFFFFF',
+    color: '#black',
   },
   trendingCard: {
     padding: 15,
