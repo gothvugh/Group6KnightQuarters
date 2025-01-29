@@ -15,19 +15,21 @@ export default function EditScreenInfo({ path }: { path: string }) {
 }
 
 const styles = StyleSheet.create({
-    getStartedContainer: {
-      alignItems: 'center',
-      marginHorizontal: 50,
-    },
-    logo: {
-        fontSize: 60,
-        fontWeight: 'bold',
-        color: '#FFC900',
-      },
-      subtitle: {
-        fontSize: 12,
-        color: '#666',
-        marginBottom: 20,
-      },
-  });
-  
+  getStartedContainer: {
+    alignItems: 'center',
+    marginHorizontal: 50,
+    backgroundColor: 'white', 
+    paddingVertical: 20,
+    borderRadius: 10, 
+  },
+  logo: {
+    fontSize: 60,
+    fontWeight: 'bold',
+    color: '#FFC900',
+  },
+  subtitle: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 20,
+  },
+});
