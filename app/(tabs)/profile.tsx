@@ -1,6 +1,7 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import KQLogo from '@/components/KQLogo';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -12,12 +13,12 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
+        <KQLogo />
       {/* Profile Header */}
       <View style={styles.header}>
         <TouchableOpacity>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Image source={require('../../assets/images/kq-logo.png')} style={styles.logo} />
         <TouchableOpacity>
           <Ionicons name="settings-outline" size={24} color="black" />
         </TouchableOpacity>

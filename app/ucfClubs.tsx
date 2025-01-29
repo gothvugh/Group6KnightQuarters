@@ -9,6 +9,7 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // Import useRouter for navigation
 
 const data = {
   posts: [
@@ -42,6 +43,7 @@ const data = {
 
 export default function UCFClubsScreen() {
   const [activeTab, setActiveTab] = useState("Posts");
+  const router = useRouter(); // Initialize router for navigation
 
   const renderPost = ({ item }) => (
     <View style={styles.postContainer}>
@@ -56,14 +58,17 @@ export default function UCFClubsScreen() {
   );
 
   const renderCommunity = ({ item }) => (
-    <View style={styles.communityContainer}>
+    <TouchableOpacity
+      onPress={() => router.push("/rotc")} // Navigate to the ROTC page
+      style={styles.communityContainer}
+    >
       <Text style={styles.communityName}>{item.name}</Text>
       <Text style={styles.members}>{item.members}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <TouchableOpacity style={styles.joinButton}>
         <Text style={styles.joinButtonText}>Join</Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   return (

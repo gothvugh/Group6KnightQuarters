@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import KQLogo from '@/components/KQLogo';
 
 const connectionsPosts = [
@@ -7,19 +16,46 @@ const connectionsPosts = [
     id: '1',
     author: 'Huey Magoos',
     username: 'User1234',
+    avatar: require('@/assets/images/avatar.png'),
     content:
       "Hey everybody! I'm looking for places near UCF main campus to get food that won't break the bank. I usually eat at the student union but I'm getting sick of eating Huey Magoo's all the time.",
-    comments: 22,
+    comments: [
+      { id: '1', username: 'RSO123', text: 'You can try Blaze or Bento. Both are great options!' },
+      { id: '2', username: 'Ilovecats', text: "I'll be there too!" },
+    ],
     time: '5 hrs ago',
   },
   {
     id: '2',
     author: 'Am I Cooked?',
     username: 'RSO123',
+    avatar: require('@/assets/images/avatar.png'),
     content: 'Ice Cream Social\nMay 25th | 8:00pm | SU218C',
     image: require('@/assets/images/ice-cream-event.png'),
-    comments: 11,
+    comments: [{ id: '1', username: 'Ilovecats', text: "I'll be there!" }],
     time: '10 hrs ago',
+  },
+  {
+    id: '3',
+    author: 'Knights United',
+    username: 'Knight123',
+    avatar: require('@/assets/images/avatar.png'),
+    content: 'Looking for study buddies for late-night cramming sessions!',
+    comments: [],
+    time: '3 hrs ago',
+  },
+];
+
+const trendingPosts = [
+  {
+    id: '1',
+    author: 'Huey Magoos',
+    content:
+      "Hey Everybody, I'm looking for places near UCF main campus to get food that won't break the bank. I usually eat at the student union but I'm getting sick of eating Huey Magoo's all the time!",
+    comments: [
+      { id: '1', username: 'RSO123', text: 'You can try Blaze or Bento. Great options!' },
+      { id: '2', username: 'Foodie', text: 'Try Lazy Moon for pizza!' },
+    ],
   },
 ];
 
@@ -50,27 +86,67 @@ const discoverGroups = [
     description:
       'KQR is Knights Experiential Robotics, a club for introducing Knights to real-world robotics.',
   },
+  {
+    id: '3',
+    author: 'Knights United',
+    username: 'Knight123',
+    avatar: require('@/assets/images/avatar.png'),
+    content: 'Looking for study buddies for late-night cramming sessions!',
+    comments: [],
+    time: '3 hrs ago',
+  },
 ];
 
 export default function ConnectionsScreen() {
   const [activeTab, setActiveTab] = useState('Connections');
+  const [expandedPostId, setExpandedPostId] = useState(null);
+  const [expandedTrendingId, setExpandedTrendingId] = useState(null);
+
+  const toggleComments = (postId) => {
+    setExpandedPostId((prevId) => (prevId === postId ? null : postId));
+  };
+
+  const toggleTrendingComments = (postId) => {
+    setExpandedTrendingId((prevId) => (prevId === postId ? null : postId));
+  };
 
   const renderConnectionsPost = ({ item }) => (
     <View style={styles.postContainer}>
-      <Text style={styles.author}>{item.author}</Text>
-      <Text style={styles.username}>@{item.username}</Text>
+      <View style={styles.headerContainer}>
+        <Image source={item.avatar} style={styles.avatar} />
+        <View>
+          <Text style={styles.author}>{item.author}</Text>
+          <Text style={styles.username}>@{item.username}</Text>
+        </View>
+      </View>
       {item.image && <Image source={item.image} style={styles.postImage} />}
       <Text style={styles.content}>{item.content}</Text>
-      <Text style={styles.footer}>
-        {item.comments} Comments • {item.time}
-      </Text>
+      <TouchableOpacity onPress={() => toggleComments(item.id)}>
+        <Text style={styles.commentsToggle}>
+          Comments ({item.comments.length})
+        </Text>
+      </TouchableOpacity>
+      {expandedPostId === item.id && (
+        <View style={styles.commentsContainer}>
+          {item.comments.map((comment) => (
+            <View key={comment.id} style={styles.comment}>
+              <Text style={styles.commentUsername}>{comment.username}</Text>
+              <Text style={styles.commentText}>{comment.text}</Text>
+            </View>
+          ))}
+          <TextInput
+            placeholder="Add a response"
+            style={styles.commentInput}
+            placeholderTextColor="#A0A0A0"
+          />
+        </View>
+      )}
+      <Text style={styles.footer}>{item.time}</Text>
     </View>
   );
 
   const renderDiscoverContent = () => (
     <ScrollView style={discoverStyles.container}>
-
-      {/* Explore Communities */}
       <Text style={discoverStyles.sectionTitle}>Explore Communities</Text>
       <View style={discoverStyles.listContainer}>
         {discoverCommunities.map((item, index) => (
@@ -79,8 +155,6 @@ export default function ConnectionsScreen() {
           </TouchableOpacity>
         ))}
       </View>
-
-      {/* Based on Groups Section */}
       <Text style={discoverStyles.sectionTitle}>Based on Groups You Might Like</Text>
       {discoverGroups.map((group) => (
         <View key={group.id} style={discoverStyles.card}>
@@ -100,17 +174,33 @@ export default function ConnectionsScreen() {
           </TouchableOpacity>
         </View>
       ))}
-
-      {/* Trending Section */}
       <Text style={discoverStyles.sectionTitle}>Trending</Text>
-      <View style={discoverStyles.trendingCard}>
-        <Text style={discoverStyles.trendingUser}>Huey Magoos</Text>
-        <Text style={discoverStyles.trendingText}>
-          Hey Everybody, I'm looking for places near UCF main campus to get food that won't break the bank. I usually eat
-          at the student union but I'm getting sick of eating Huey Magoo's all the time!
-        </Text>
-        <Text style={discoverStyles.trendingComments}>Comments (10)</Text>
-      </View>
+      {trendingPosts.map((post) => (
+        <View key={post.id} style={discoverStyles.trendingCard}>
+          <Text style={discoverStyles.trendingUser}>{post.author}</Text>
+          <Text style={discoverStyles.trendingText}>{post.content}</Text>
+          <TouchableOpacity onPress={() => toggleTrendingComments(post.id)}>
+            <Text style={discoverStyles.trendingComments}>
+              Comments ({post.comments.length})
+            </Text>
+          </TouchableOpacity>
+          {expandedTrendingId === post.id && (
+            <View style={styles.commentsContainer}>
+              {post.comments.map((comment) => (
+                <View key={comment.id} style={styles.comment}>
+                  <Text style={styles.commentUsername}>{comment.username}</Text>
+                  <Text style={styles.commentText}>{comment.text}</Text>
+                </View>
+              ))}
+              <TextInput
+                placeholder="Add a response"
+                style={styles.commentInput}
+                placeholderTextColor="#A0A0A0"
+              />
+            </View>
+          )}
+        </View>
+      ))}
     </ScrollView>
   );
 
@@ -142,7 +232,6 @@ export default function ConnectionsScreen() {
 }
 
 const styles = StyleSheet.create({
-  // Connections-specific styles
   container: {
     flexGrow: 1,
     backgroundColor: '#fff',
@@ -151,6 +240,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    marginBottom: 10,
   },
   tabContainer: {
     flexDirection: 'row',
@@ -166,13 +256,24 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   listContainer: {
-    padding: 10,
+    paddingBottom: 20,
   },
   postContainer: {
     backgroundColor: '#f9f9f9',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
   },
   author: {
     fontSize: 16,
@@ -181,7 +282,6 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 14,
     color: '#888',
-    marginBottom: 10,
   },
   postImage: {
     width: '100%',
@@ -194,6 +294,35 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 10,
   },
+  commentsToggle: {
+    fontSize: 12,
+    color: '#A0A0A0',
+    marginBottom: 10,
+  },
+  commentsContainer: {
+    padding: 10,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+  },
+  comment: {
+    marginBottom: 10,
+  },
+  commentUsername: {
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  commentText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  commentInput: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 10,
+    fontSize: 14,
+  },
   footer: {
     fontSize: 12,
     color: '#888',
@@ -201,28 +330,11 @@ const styles = StyleSheet.create({
 });
 
 const discoverStyles = StyleSheet.create({
-  // Discover-specific styles (preserved exactly as before)
   container: {
     flexGrow: 1,
     backgroundColor: '#FFFFFF',
     paddingHorizontal: 20,
     paddingTop: 50,
-  },
-  header: {
-    alignItems: 'center',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  tab: {
-    fontSize: 16,
-    marginHorizontal: 10,
-    color: '#A0A0A0',
-  },
-  activeTab: {
-    fontWeight: 'bold',
-    color: '#000',
   },
   sectionTitle: {
     fontSize: 18,

@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     logo: {
         fontSize: 60,
         fontWeight: 'bold',
-        color: '#E9C46A',
+        color: '#FFC900',
       },
       subtitle: {
         fontSize: 12,
