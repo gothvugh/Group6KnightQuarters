@@ -7,8 +7,14 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import KQLogo from '@/components/KQLogo';
+import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
+  const router = useRouter();
+  const handleFAQ = () => {
+    router.replace('/FAQ');
+  }
+
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -39,7 +45,7 @@ export default function SettingsScreen() {
         <Ionicons name="chevron-forward" size={20} color="black" />
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.settingItem}>
+      <TouchableOpacity style={styles.settingItem} onPress={handleFAQ}>
         <Text style={styles.settingText}>FAQ</Text>
         <Ionicons name="chevron-forward" size={20} color="black" />
       </TouchableOpacity>
