@@ -41,10 +41,10 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="discover"
+          name="search"
           options={{
-            title: 'Discover',
-            tabBarIcon: ({ color }) => <TabBarIcon name="search" color={color} />,
+            title: 'Search',
+            tabBarIcon: ({ color }) => <TabBarIcon name="search-plus" color={color} />,
           }}
         />
         <Tabs.Screen 
@@ -52,13 +52,6 @@ export default function TabLayout() {
           options={{
             title: 'Create',
             tabBarIcon: ({color}) => <TabBarIcon name="plus-circle" color={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="search"
-          options={{
-            title: 'Search',
-            tabBarIcon: ({ color }) => <TabBarIcon name="search-plus" color={color} />,
           }}
         />
         <Tabs.Screen
