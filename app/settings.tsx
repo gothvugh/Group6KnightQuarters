@@ -42,6 +42,13 @@ export default function SettingsScreen() {
         <Text style={styles.settingOption}>**************</Text>
       </View>
       
+  <View style={styles.settingItem}>
+        <Text style={styles.settingText}>Saved</Text>
+        <Text style={styles.settingText}>Archived</Text>
+        <Text style={styles.settingText}>Your Activity</Text>
+        <Text style={styles.settingOption}>Manage Account</Text>
+      </View>
+      
       <TouchableOpacity style={styles.settingItem}>
         <Text style={styles.settingText}>Blocked</Text>
         <Ionicons name="chevron-forward" size={20} color="black" />
