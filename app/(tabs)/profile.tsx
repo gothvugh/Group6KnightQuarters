@@ -11,15 +11,19 @@ export default function ProfileScreen() {
     router.replace('/auth/login'); // Navigate back to the login screen
   };
 
+  const handleSetting = () => {
+    router.replace('/Settings');
+  }
+
   return (
-    <View style={styles.container}>
-        <KQLogo />
+    <ScrollView style={styles.container}>
+        <KQLogo path="app/(tabs)/profile.tsx" />
       {/* Profile Header */}
       <View style={styles.header}>
         <TouchableOpacity>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={handleSetting}>
           <Ionicons name="settings-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
@@ -67,7 +71,7 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>Log Out</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
