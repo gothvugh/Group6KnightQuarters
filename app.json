@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Group6KnightQuarters",
-    "slug": "Group6KnightQuarters",
+    "slug": "knight-quarters",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -14,7 +14,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.giannaruspantini.knightquarters"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +33,21 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "0ff8ca75-fc4e-417a-b96f-6509251c3f40"
+      }
+    },
+    "owner": "giannaruspantini",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0ff8ca75-fc4e-417a-b96f-6509251c3f40"
     }
   }
 }
