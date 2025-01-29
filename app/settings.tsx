@@ -32,12 +32,14 @@ export default function SettingsScreen() {
       
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Sound</Text>
-        <Text style={styles.settingOption}>ON/OFF</Text>
+        <Text style={styles.settingOption}>Master Audio Mixer</Text>
       </View>
       
       <View style={styles.settingItem}>
+        <Text style={styles.settingText}>Username</Text>
+        <Text style={styles.settingText}>TheKingofGames</Text>
         <Text style={styles.settingText}>Password</Text>
-        <Text style={styles.settingOption}>•••••</Text>
+        <Text style={styles.settingOption}>**************</Text>
       </View>
       
       <TouchableOpacity style={styles.settingItem}>
@@ -94,3 +96,4 @@ const styles = StyleSheet.create({
     color: "gray",
   },
 });
+
