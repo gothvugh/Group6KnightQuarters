@@ -9,6 +9,8 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // Import useRouter for navigation
+import KQLogo from "@/components/KQLogo";
 
 const data = {
   posts: [
@@ -42,6 +44,7 @@ const data = {
 
 export default function UCFClubsScreen() {
   const [activeTab, setActiveTab] = useState("Posts");
+  const router = useRouter(); // Initialize router for navigation
 
   const renderPost = ({ item }) => (
     <View style={styles.postContainer}>
@@ -56,30 +59,33 @@ export default function UCFClubsScreen() {
   );
 
   const renderCommunity = ({ item }) => (
-    <View style={styles.communityContainer}>
+    <TouchableOpacity
+      onPress={() => router.push("/rotc")} // Navigate to the ROTC page
+      style={styles.communityContainer}
+    >
       <Text style={styles.communityName}>{item.name}</Text>
       <Text style={styles.members}>{item.members}</Text>
       <Text style={styles.description}>{item.description}</Text>
       <TouchableOpacity style={styles.joinButton}>
         <Text style={styles.joinButtonText}>Join</Text>
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={24} color="black" />
+        <KQLogo path="app/ucfClubs.tsx" />
         <Text style={styles.title}>UCF Clubs</Text>
-        <View style={styles.searchContainer}>
+      </View>
+      <View style={styles.searchContainer}>
           <TextInput
-            placeholder="Search"
-            style={styles.searchInput}
-            placeholderTextColor="#A0A0A0"
-          />
+              placeholder="Search"
+              style={styles.searchInput}
+              placeholderTextColor="#A0A0A0"
+            />
           <Ionicons name="search" size={20} color="#A0A0A0" />
-        </View>
       </View>
 
       {/* Tabs */}
@@ -104,14 +110,14 @@ export default function UCFClubsScreen() {
           data={data.posts}
           renderItem={renderPost}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
+          //contentContainerStyle={styles.listContainer}
         />
       ) : (
         <FlatList
           data={data.communities}
           renderItem={renderCommunity}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
+          //contentContainerStyle={styles.listContainer}
         />
       )}
     </View>
@@ -126,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 20,
@@ -139,11 +145,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    borderRadius: 8,
+    borderRadius: 12,
     paddingHorizontal: 10,
+    marginBottom: 20,
     height: 40,
-    flex: 1,
-    marginLeft: 10,
   },
   searchInput: {
     flex: 1,
