@@ -5,43 +5,65 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import KQLogo from '@/components/KQLogo';
+import { useRouter } from "expo-router";
+import KQLogo from "@/components/KQLogo";
 
-export default function HomeScreen() {
+const screenWidth = Dimensions.get("window").width;
+
+export default function SearchScreen() {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <KQLogo path="app/(tabs)/discover.tsx"/>
-      {/* Header with Logo and Search Bar */}
-      <View style={styles.header}>
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color="gray" style={styles.searchIcon} />
-          <TextInput
-            placeholder="Search"
-            style={styles.searchInput}
-            placeholderTextColor="gray"
-          />
-        </View>
+      {/* Logo */}
+      <KQLogo path="app/(tabs)/search.tsx" />
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <TextInput
+          placeholder="Search"
+          style={styles.searchInput}
+          placeholderTextColor="#A0A0A0"
+        />
+        <Ionicons name="search" size={20} color="#A0A0A0" style={styles.searchIcon} />
       </View>
 
-      {/* Main Content */}
+      {/* Buttons */}
       <ScrollView contentContainerStyle={styles.content}>
-        {[
-          "Housing",
-          "UCF Clubs",
-          "Events",
-          "UCF Professors",
-          "Communities",
-          "Forums",
-          "Off Campus",
-          "FAQs",
-        ].map((item, index) => (
-          <TouchableOpacity key={index} style={styles.button}>
-            <Text style={styles.buttonText}>{item}</Text>
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity
+          onPress={() => router.push("/ucfHousing")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Housing</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.push("/ucfClubs")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>UCF Clubs</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Events</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>UCF Professors</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Communities</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Forums</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Off Campus</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>FAQs</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -51,56 +73,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    marginBottom: 16,
-  },
-  logo: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFC107",
-    marginRight: 16,
+    paddingTop: 50,
+    paddingHorizontal: 20,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
-    flex: 1,
-    borderRadius: 8,
-    paddingHorizontal: 8,
-  },
-  searchIcon: {
-    marginRight: 8,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    height: 40,
   },
   searchInput: {
     flex: 1,
-    height: 40,
     fontSize: 16,
+    color: "#000",
+  },
+  searchIcon: {
+    marginLeft: 5,
   },
   content: {
-    flex: 1, // Ensures this area stretches to fill available space
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between", // Evenly distributes buttons
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    justifyContent: "space-between",
   },
   button: {
-    backgroundColor: "#FFC904",
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginVertical: 6,
-    width: "45%",
+    backgroundColor: "#FFFBEA",
+    borderRadius: 20,
+    width: (screenWidth - 50) / 2, // Adjust button width
+    paddingVertical: 30,
+    marginBottom: 20,
+    justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 2,
   },
   buttonText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "bold",
     textAlign: "center",
+    color: "#000",
   },
 });

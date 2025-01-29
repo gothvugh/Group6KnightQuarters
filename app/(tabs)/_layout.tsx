@@ -56,6 +56,13 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
+  name="messages"
+  options={{
+    title: 'Messages',
+    tabBarIcon: ({ color }) => <TabBarIcon name="envelope" color={color} />,
+  }}
+/>
+        <Tabs.Screen
           name="profile"
           options={{
             title: 'Profile',
