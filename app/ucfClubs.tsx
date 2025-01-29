@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#FFD700",
   },
   postContainer: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#FFFBEA",
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,

@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   postContainer: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#FFFBEA',
     padding: 15,
     borderRadius: 10,
     marginBottom: 15,
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
   },
   commentsContainer: {
     padding: 10,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#FFFBEA',
     borderRadius: 8,
   },
   comment: {
@@ -417,7 +417,7 @@ const discoverStyles = StyleSheet.create({
   },
   trendingCard: {
     padding: 15,
-    backgroundColor: '#F7F7F7',
+    backgroundColor: '#FFFBEA',
     borderRadius: 10,
     marginBottom: 20,
   },
