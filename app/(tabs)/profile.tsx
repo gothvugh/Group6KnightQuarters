@@ -20,9 +20,6 @@ export default function ProfileScreen() {
         <KQLogo path="app/(tabs)/profile.tsx" />
       {/* Profile Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
         <TouchableOpacity onPress={handleSetting}>
           <Ionicons name="settings-outline" size={24} color="black" />
         </TouchableOpacity>
@@ -82,9 +79,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     paddingVertical: 15,
   },
   logo: {
