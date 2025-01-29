@@ -6,20 +6,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter} from 'expo-router';
-
-const router = useRouter();
-
-const handleFAQ = () => {
-    router.replace('/FAQ');
-  }
+import KQLogo from '@/components/KQLogo';
 
 export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.logo}>KQ</Text>
+        <KQLogo path="app/Settings.tsx" />
       </View>
       
       <Text style={styles.title}>Settings</Text>
@@ -32,21 +26,12 @@ export default function SettingsScreen() {
       
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Sound</Text>
-        <Text style={styles.settingOption}>Master Audio Mixer</Text>
+        <Text style={styles.settingOption}>ON/OFF</Text>
       </View>
       
       <View style={styles.settingItem}>
-        <Text style={styles.settingText}>Username</Text>
-        <Text style={styles.settingText}>TheKingofGames</Text>
         <Text style={styles.settingText}>Password</Text>
-        <Text style={styles.settingOption}>**************</Text>
-      </View>
-      
-  <View style={styles.settingItem}>
-        <Text style={styles.settingText}>Saved</Text>
-        <Text style={styles.settingText}>Archived</Text>
-        <Text style={styles.settingText}>Your Activity</Text>
-        <Text style={styles.settingOption}>Manage Account</Text>
+        <Text style={styles.settingOption}>•••••</Text>
       </View>
       
       <TouchableOpacity style={styles.settingItem}>
@@ -54,10 +39,11 @@ export default function SettingsScreen() {
         <Ionicons name="chevron-forward" size={20} color="black" />
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.settingItem} onPress={handleFAQ}>
+      <TouchableOpacity style={styles.settingItem}>
         <Text style={styles.settingText}>FAQ</Text>
         <Ionicons name="chevron-forward" size={20} color="black" />
       </TouchableOpacity>
+      
     </View>
   );
 }
@@ -102,5 +88,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
+  bottomNav: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderColor: "#e0e0e0",
+    backgroundColor: "#fff",
+  },
 });
-
