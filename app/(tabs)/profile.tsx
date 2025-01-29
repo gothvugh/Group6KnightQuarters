@@ -1,7 +1,15 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 export default function ProfileScreen() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    // Clear any session or user data here if necessary
+    router.replace('/auth/login'); // Navigate back to the login screen
+  };
+
   return (
     <View style={styles.container}>
       {/* Profile Header */}
@@ -53,6 +61,11 @@ export default function ProfileScreen() {
           <Text style={styles.communityText}>Tennis</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Logout Button */}
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutButtonText}>Log Out</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -140,5 +153,16 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontWeight: 'bold',
   },
+  logoutButton: {
+    backgroundColor: '#E9C46A',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  logoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
-
