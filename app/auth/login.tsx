@@ -1,31 +1,84 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from "react";
 import { useRouter } from 'expo-router';
+import axios from "axios";
 import KQLogo from '@/components/KQLogo';
+
+const API_URL = "http://10.123.98.71/api/login.php";; // Use your local IP
 
 export default function LoginScreen() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = () => {
-    // Replace this with real authentication logic if needed
-    router.replace('/connections'); // Navigate to the Connections tab
+  const handleLogin = async () => {
+    setError(""); // Clear previous errors
+
+    if (!email.trim() || !password.trim()) {
+      setError("Email and password are required.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(API_URL, {
+        email,
+        password,
+      }, {
+        headers: { "Content-Type": "application/json" }
+      });
+
+      console.log("Response:", response.data);
+
+      if (response.data.success) {
+        console.log("User ID:", response.data.user_id);
+        router.replace("/(tabs)/connections"); // Navigate to connections screen
+      } else {
+        setError(response.data.message);
+      }
+    } catch (error) {
+      console.error("Login Error:", error);
+      setError("Login failed. Try again later.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <KQLogo path="app/auth/login.tsx" />
-      <Text style={styles.welcome}>Welcome</Text>
+      <Text style={styles.welcome}>Login</Text>
 
-      <TextInput style={styles.input} placeholder="UCF Email" placeholderTextColor="#999" />
-      <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#999" secureTextEntry />
+      {/* Email Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="UCF Email"
+        value={email}
+        onChangeText={setEmail}
+        placeholderTextColor="#999"
+      />
+      
+      {/* Password Input */}
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        placeholderTextColor="#999"
+        secureTextEntry
+      />
 
+      {/* Error Message */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      {/* Login Button */}
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
+      {/* Navigate to Signup */}
       <Text style={styles.footerText}>
-        Don’t have an account?{' '}
+        Don't have an account?{' '}
         <Text style={styles.link} onPress={() => router.push('/auth/signup')}>
-          Register here
+          Sign up here
         </Text>
       </Text>
     </View>
@@ -52,12 +105,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f3f3',
     borderRadius: 8,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
   button: {
     backgroundColor: '#FFC900',
     paddingVertical: 15,
     paddingHorizontal: 50,
     borderRadius: 8,
-    marginTop: 20,
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
