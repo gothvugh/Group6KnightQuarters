@@ -12,7 +12,7 @@ const App = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get("http://localhost/api/get_data.php"); // Change URL if needed
+            const response = await axios.get("http://10.123.98.71/api/get_data.php"); // Change URL if needed
             setData(response.data);
         } catch (error) {
             console.error("Error fetching data:", error);
