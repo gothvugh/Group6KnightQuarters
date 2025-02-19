@@ -68,6 +68,14 @@ export default function SignupScreen() {
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
         <Text style={styles.buttonText}>Sign Up</Text>
       </TouchableOpacity>
+     
+     
+      <Text style={styles.footerText}>
+          Already have an account?{' '}
+          <Text style={styles.link} onPress={() => router.push('/auth/login')}>
+            Log in here
+          </Text>
+      </Text>
     </View>
   );
 }
@@ -100,5 +108,13 @@ const styles = StyleSheet.create({
   { color: '#fff', 
     fontSize: 18, 
     fontWeight: 'bold' },
+    footerText: {
+      marginTop: 20,
+      color: '#666',
+    },
+    link: {
+      color: '#E9C46A',
+      fontWeight: 'bold',
+    },
 });
 
