@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import axios from "axios";
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "http://10.123.98.71/api/login.php";; // Use your local IP
+const API_URL = "http://localhost/api/login.php";; // Use your local IP
 
 export default function LoginScreen() {
   const router = useRouter();
