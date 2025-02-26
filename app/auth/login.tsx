@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from 'expo-router';
 import axios from "axios";
 import KQLogo from '@/components/KQLogo';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const API_URL = "http://localhost/api/login.php";; // Use your local IP
 
@@ -31,11 +32,16 @@ export default function LoginScreen() {
       console.log("Response:", response.data);
 
       if (response.data.success) {
-        console.log("User ID:", response.data.user_id);
-        router.replace("/(tabs)/connections"); // Navigate to connections screen
-      } else {
-        setError(response.data.message);
-      }
+        const user = response.data.user;
+
+      // Store user data in AsyncStorage
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+
+      console.log("User saved:", user);
+      router.replace("/(tabs)/connections"); // Redirect to Connections
+    } else {
+      setError(response.data.message);
+    }
     } catch (error) {
       console.error("Login Error:", error);
       setError("Login failed. Try again later.");
