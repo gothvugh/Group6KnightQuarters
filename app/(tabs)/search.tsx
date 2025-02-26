@@ -35,13 +35,13 @@ export default function SearchScreen() {
       {/* Buttons */}
       <ScrollView contentContainerStyle={styles.content}>
         <TouchableOpacity
-          onPress={() => router.push("/Housing")}
+          onPress={() => router.push("/screens/Housing")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Housing</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => router.push("/Clubs")}
+          onPress={() => router.push("/screens/Clubs")}
           style={styles.button}
         >
           <Text style={styles.buttonText}>UCF Clubs</Text>
@@ -61,7 +61,7 @@ export default function SearchScreen() {
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Off Campus</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => router.push("/FAQ")} style={styles.button} >
+        <TouchableOpacity onPress={() => router.push("/screens/faq")} style={styles.button} >
           <Text style={styles.buttonText}>FAQs</Text>
         </TouchableOpacity>
       </ScrollView>

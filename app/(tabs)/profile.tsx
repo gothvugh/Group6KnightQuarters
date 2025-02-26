@@ -1,73 +1,95 @@
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from 'expo-router';
 import KQLogo from '@/components/KQLogo';
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const [user, setUser] = useState(null);
 
-  const handleLogout = () => {
-    // Clear any session or user data here if necessary
-    router.replace('/auth/login'); // Navigate back to the login screen
+  useEffect(() => {
+    // Load user data from AsyncStorage
+    const loadUser = async () => {
+      const userData = await AsyncStorage.getItem("user");
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    };
+    loadUser();
+  }, []);
+
+  const defaultAvatar = require('../../assets/images/avatar.png');
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem("user"); // Clear user session
+    router.replace("/auth/login"); // Redirect to login screen
   };
 
   const handleSetting = () => {
-    router.replace('/Settings');
+    router.replace('/screens/settings');
   }
 
   return (
     <ScrollView style={styles.container}>
-        <KQLogo path="app/(tabs)/profile.tsx" />
-      {/* Profile Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleSetting}>
-          <Ionicons name="settings-outline" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-
-      {/* User Info */}
-      <View style={styles.profileSection}>
-        <Image source={require('../../assets/images/avatar.png')} style={styles.avatar} />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.major}>Biology major</Text>
-        <Text style={styles.bio}>
-          I wonder how hard it’ll be to become a Rocket Scientist
-        </Text>
-      </View>
-
-      {/* Stats */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Following</Text>
-          <Text style={styles.statNumber}>145</Text>
+    <KQLogo path="app/(tabs)/profile.tsx" />
+    { user ? (
+      <>
+        {/* Profile Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleSetting}>
+            <Ionicons name="settings-outline" size={24} color="black" />
+          </TouchableOpacity>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Followers</Text>
-          <Text style={styles.statNumber}>53</Text>
+
+        {/* User Info */}
+        <View style={styles.profileSection}>
+          <Image source={{uri: user.avatar_url ? user.avatar_url : defaultAvatar }} style={styles.avatar} />
+          <Text style={styles.name}>{user.first_name} {user.last_name}</Text>
+          <Text style={styles.major}> {user.major} </Text>
+          <Text style={styles.bio}>
+            {user.profile_bio}
+          </Text>
         </View>
-      </View>
 
-      {/* Posts */}
-      <Text style={styles.sectionTitle}>My posts</Text>
-      <Text style={styles.noPosts}>No Posts Yet.</Text>
+        {/* Stats */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>Following</Text>
+            <Text style={styles.statNumber}>145</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statLabel}>Followers</Text>
+            <Text style={styles.statNumber}>53</Text>
+          </View>
+        </View>
 
-      {/* Communities */}
-      <Text style={styles.sectionTitle}>My Communities</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.communityContainer}>
-        <TouchableOpacity style={styles.communityButton}>
-          <Ionicons name="person-circle-outline" size={20} color="black" />
-          <Text style={styles.communityText}>Rotc</Text>
+        {/* Posts */}
+        <Text style={styles.sectionTitle}>My posts</Text>
+        <Text style={styles.noPosts}>No Posts Yet.</Text>
+
+        {/* Communities */}
+        <Text style={styles.sectionTitle}>My Communities</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.communityContainer}>
+          <TouchableOpacity style={styles.communityButton}>
+            <Ionicons name="person-circle-outline" size={20} color="black" />
+            <Text style={styles.communityText}>Rotc</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.communityButton}>
+            <Ionicons name="person-circle-outline" size={20} color="black" />
+            <Text style={styles.communityText}>Tennis</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* Logout Button */}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutButtonText}>Log Out</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.communityButton}>
-          <Ionicons name="person-circle-outline" size={20} color="black" />
-          <Text style={styles.communityText}>Tennis</Text>
-        </TouchableOpacity>
-      </ScrollView>
-
-      {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutButtonText}>Log Out</Text>
-      </TouchableOpacity>
+      </>
+    ) : (
+      <Text> Loading Screen </Text>
+    )}
     </ScrollView>
   );
 }

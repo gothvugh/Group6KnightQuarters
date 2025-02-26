@@ -12,7 +12,10 @@ import { useRouter } from 'expo-router';
 export default function SettingsScreen() {
   const router = useRouter();
   const handleFAQ = () => {
-    router.replace('/FAQ');
+    router.replace('/screens/faq');
+  }
+  const handleProfile = () => {
+    router.replace('/screens/update_profile');
   }
 
   return (
@@ -25,6 +28,11 @@ export default function SettingsScreen() {
       <Text style={styles.title}>Settings</Text>
       
       {/* Settings List */}
+      <TouchableOpacity style={styles.settingItem} onPress={handleProfile}>
+        <Text style={styles.settingText}>Update Profile</Text>
+        <Ionicons name="chevron-forward" size={20} color="black" />
+      </TouchableOpacity>
+
       <View style={styles.settingItem}>
         <Text style={styles.settingText}>Notifications</Text>
         <Text style={styles.settingOption}>ON/OFF</Text>
