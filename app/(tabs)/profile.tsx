@@ -20,8 +20,6 @@ export default function ProfileScreen() {
     loadUser();
   }, []);
 
-  const defaultAvatar = require('../../assets/images/avatar.png');
-
   const handleLogout = async () => {
     await AsyncStorage.removeItem("user"); // Clear user session
     router.replace("/auth/login"); // Redirect to login screen
@@ -45,7 +43,7 @@ export default function ProfileScreen() {
 
         {/* User Info */}
         <View style={styles.profileSection}>
-          <Image source={{uri: user.avatar_url ? user.avatar_url : defaultAvatar }} style={styles.avatar} />
+          <Image source={{ uri: user.avatar_url && user.avatar_url !== "" ? user.avatar_url : require('../../assets/images/avatar.png') }} style={styles.avatar} />
           <Text style={styles.name}>{user.first_name} {user.last_name}</Text>
           <Text style={styles.major}> {user.major} </Text>
           <Text style={styles.bio}>
