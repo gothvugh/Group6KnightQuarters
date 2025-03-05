@@ -74,17 +74,23 @@ export default function CreatePostScreen() {
       return;
     }
 
+    console.log("Sending to API:", { user_id: userId, content: postContent.trim(), community_id: selectedCommunity }); // Debugging
+
+
     try {
       const response = await axios.post(`${API_URL}create_post.php`, {
         user_id: userId,
         content: postContent.trim(),
-        community: selectedCommunity,
-      });
+        community_id: selectedCommunity,
+      }, {
+        headers: { "Content-Type": "application/json" } // Ensure Axios is sending the corrent content-type 
+      })
+
 
       if (response.data.success) {
-        setError(""); // Clear error message on success
-        setPostContent("");
-        setSelectedCommunity(null);
+        setError(""); // Clear Error
+        setPostContent(""); // Clear Input Box
+        // setSelectedCommunity(null) 
         router.replace("/(tabs)/connections"); 
       } else {
         setError(response.data.message);
