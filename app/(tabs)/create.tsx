@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useRouter } from "expo-router";
@@ -83,7 +83,9 @@ export default function CreatePostScreen() {
 
       if (response.data.success) {
         setError(""); // Clear error message on success
-        router.replace("/(tabs)/connections"); // Redirect to home after posting
+        setPostContent("");
+        setSelectedCommunity(null);
+        router.replace("/(tabs)/connections"); 
       } else {
         setError(response.data.message);
       }
@@ -123,11 +125,24 @@ export default function CreatePostScreen() {
       {/* Choose Community Section */}
       <View style={styles.listContainer}>
         <Text style={styles.sectionTitle}>Available Communities</Text>
+        
         <View style={styles.itemContainer}>
           {Array.isArray(communities) && communities.length > 0 ? (
             communities.map((community) => (
-              <TouchableOpacity key={community.id} style={styles.item}>
-                  <Text style={styles.itemText}>{community.name}</Text>
+              <TouchableOpacity
+                key={community.id}
+                style={[
+                  styles.item,
+                  selectedCommunity === community.id && styles.selectedItem // Highlight selection
+                ]}
+                onPress={() => setSelectedCommunity(community.id)}
+              >
+                <Text style={[
+                  styles.itemText,
+                  selectedCommunity === community.id && styles.selectedItemText // Change text color if selected
+                ]}>
+                  {community.name}
+                </Text>
               </TouchableOpacity>
             ))
           ) : (
@@ -136,8 +151,16 @@ export default function CreatePostScreen() {
         </View>
       </View>
 
-      {/* Error Message */}
+      {/* Show Selected Community Below */}
+      {selectedCommunity && (
+        <Text style={styles.selectedText}>
+          Posting in: {communities.find(c => c.id === selectedCommunity)?.name}
+        </Text>
+      )}
+
+      {/*Error Message */}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
     </View>
   );
 }
@@ -199,12 +222,12 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     flexWrap: "wrap",
     padding: 20,
-    justifyContent: "center",
   },
   itemContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
+    justifyContent: "center",
   },
   item: {
     backgroundColor: '#FFD700',
@@ -215,10 +238,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-start',
   },
+  selectedItem: {
+    backgroundColor: "#FF8C00", // Highlight selected button
+  },
   itemText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
+  },
+  selectedItemText: {
+    color: "#FFF", // Change text color when selected
+  },
+  selectedText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#555",
+    textAlign: "center",
+    marginTop: 10,
   },
   errorText: {
     color: "red",
@@ -227,4 +263,3 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
