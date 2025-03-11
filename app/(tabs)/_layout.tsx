@@ -32,14 +32,6 @@ export default function TabLayout() {
         }}
       >
         {/* Main Tabs */}
-
-        <Tabs.Screen
-          name="data_testing"
-          options={{
-            title: 'Testing',
-            tabBarIcon: ({ color }) => <TabBarIcon name="users" color={color} />,
-          }}
-        />
        
         <Tabs.Screen
           name="connections"
