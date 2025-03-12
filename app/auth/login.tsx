@@ -5,7 +5,7 @@ import axios from "axios";
 import KQLogo from '@/components/KQLogo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "http://localhost/api/login.php";; // Use your local IP
+const API_URL = "http://localhost:8888/login.php";; // Use your local IP
 
 export default function LoginScreen() {
   const router = useRouter();

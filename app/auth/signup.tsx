@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { useRouter } from 'expo-router';
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "http://localhost/api/register.php"; // Use your local IP
+const API_URL = "http://localhost:8888/register.php"; // Use your local IP
 
 export default function SignupScreen() {
   const router = useRouter();

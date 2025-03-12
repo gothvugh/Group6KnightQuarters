@@ -1,73 +1,100 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { 
+  View, Text, StyleSheet, FlatList, TouchableOpacity, Image, 
+  ActivityIndicator
+} from 'react-native';
 import { useRouter } from 'expo-router';
+import axios from 'axios';
 import KQLogo from '@/components/KQLogo';
 
-const messages = [
-  {
-    id: '1',
-    name: 'Alex Jordan',
-    time: '4 hrs ago',
-    message: "Hey! Long time no see 😄 How’ve you been?",
-    avatar: require('@/assets/images/avatar.png'), // Replace with the correct avatar path
-    unread: false,
-  },
-  {
-    id: '2',
-    name: 'Sam Kim',
-    time: '5 hrs ago',
-    message: 'Hey! I just finished that book you recommended',
-    avatar: require('@/assets/images/avatar.png'),
-    unread: false,
-  },
-  {
-    id: '3',
-    name: 'Ben Tara',
-    time: '8 hrs ago',
-    message: '😂 This is literally you every Monday morning.',
-    avatar: require('@/assets/images/avatar.png'),
-    unread: true,
-  },
-  {
-    id: '4',
-    name: 'Chris Pat',
-    time: '2 hrs ago',
-    message: 'No way, that’s amazing! I’m so happy for you. When do you start?',
-    avatar: require('@/assets/images/avatar.png'),
-    unread: false,
-  },
-  {
-    id: '5',
-    name: 'Sarah Johnson',
-    time: '2 hrs ago',
-    message: 'Yo, wanna hop on Minecraft tonight?',
-    avatar: require('@/assets/images/avatar.png'),
-    unread: false,
-  },
-];
+const API_URL = "http://localhost:8888/get_messages.php"; // Replace with actual backend URL
 
 export default function MessagesScreen() {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get(API_URL);
+        let realMessages = response.data;
+
+        // Faux messages for UI testing
+        const fauxMessages = [
+          {
+            id: 'f1',
+            sender_name: 'Alex Jordan',
+            content: "Hey! Long time no see 😄 How’ve you been?",
+            sender_avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: 'f2',
+            sender_name: 'Sam Kim',
+            content: 'Hey! I just finished that book you recommended!',
+            sender_avatar: 'https://randomuser.me/api/portraits/women/2.jpg',
+            created_at: new Date().toISOString(),
+          },
+        ];
+
+        if (realMessages.length < 5) {
+          realMessages = [...realMessages, ...fauxMessages];
+        }
+
+        setMessages(realMessages);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+        setMessages(fauxMessages);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  const handlePressMessage = (item) => {
+    router.push({
+      pathname: '/screens/chat',
+      params: {
+        sender_name: item.sender_name,
+        sender_avatar: item.sender_avatar
+      }
+    });
+  };
 
   const renderMessage = ({ item }) => (
     <TouchableOpacity
       style={styles.messageContainer}
-      onPress={() => router.push('/chat')} // Navigate to the Chat screen
+      onPress={() => handlePressMessage(item)}
     >
-      <Image source={item.avatar} style={styles.avatar} />
+      <Image source={{ uri: item.sender_avatar }} style={styles.avatar} />
       <View style={styles.messageInfo}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.time}>{item.time}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.name}>{item.sender_name}</Text>
+        <Text style={styles.time}>{new Date(item.created_at).toLocaleTimeString()}</Text>
+        <Text style={styles.content}>{item.content}</Text>
       </View>
-      {item.unread && <View style={styles.unreadIndicator} />}
     </TouchableOpacity>
   );
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#007BFF" style={{ flex: 1, justifyContent: 'center' }} />;
+  }
 
   return (
     <View style={styles.container}>
       <KQLogo />
       <Text style={styles.title}>Direct Messages</Text>
+      
+      {/* "New Message" now navigates to chat screen with a new message state */}
+      <TouchableOpacity 
+        style={styles.newMessageButton} 
+        onPress={() => router.push('/screens/chat?new=true')}
+      >
+        <Text style={styles.newMessageButtonText}>New Message</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={messages}
         renderItem={renderMessage}
@@ -79,6 +106,7 @@ export default function MessagesScreen() {
 }
 
 const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -123,14 +151,21 @@ const styles = StyleSheet.create({
     color: '#A0A0A0',
     marginBottom: 5,
   },
-  message: {
+  content: {
     fontSize: 14,
     color: '#000',
   },
-  unreadIndicator: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+  newMessageButton: {
     backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  newMessageButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
+
