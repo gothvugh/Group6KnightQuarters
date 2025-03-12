@@ -145,7 +145,7 @@ export default function CreatePostScreen() {
               >
                 <Text style={[
                   styles.itemText,
-                  selectedCommunity === community.id && styles.selectedItemText // Change text color if selected
+                  selectedCommunity === community.id && styles.selectedItemText // Change text upon selected
                 ]}>
                   {community.name}
                 </Text>
@@ -177,6 +177,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: 40,
   },
+
+  // Style for Post Input Box
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -229,6 +231,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     padding: 20,
   },
+
+  // Styling for Buttons
   itemContainer: {
     flexDirection: "row",
     flexWrap: "wrap",

@@ -51,7 +51,7 @@ export default function SearchScreen() {
     setError("");
 
     try {
-      const response = await axios.get(`${API_URL}/get_posts.php?query=${encodeURIComponent(searchQuery)}`);
+      const response = await axios.get(`${API_URL}/get_search.php?query=${encodeURIComponent(searchQuery)}`);
       if (response.data.success) {
         setSearchResults(response.data.posts);
       } else {

@@ -55,11 +55,11 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>Following</Text>
-            <Text style={styles.statNumber}>145</Text>
+            <Text style={styles.statNumber}>0</Text>
           </View>
           <View style={styles.statBox}>
             <Text style={styles.statLabel}>Followers</Text>
-            <Text style={styles.statNumber}>53</Text>
+            <Text style={styles.statNumber}>0</Text>
           </View>
         </View>
 
@@ -70,14 +70,7 @@ export default function ProfileScreen() {
         {/* Communities */}
         <Text style={styles.sectionTitle}>My Communities</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.communityContainer}>
-          <TouchableOpacity style={styles.communityButton}>
-            <Ionicons name="person-circle-outline" size={20} color="black" />
-            <Text style={styles.communityText}>Rotc</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.communityButton}>
-            <Ionicons name="person-circle-outline" size={20} color="black" />
-            <Text style={styles.communityText}>Tennis</Text>
-          </TouchableOpacity>
+          <Text style={styles.noPosts}> You're not following any communities yet. </Text>
         </ScrollView>
 
         {/* Logout Button */}

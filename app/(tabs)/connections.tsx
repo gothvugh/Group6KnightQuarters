@@ -1,350 +1,510 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  ScrollView,
-} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import KQLogo from '@/components/KQLogo';
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const connectionsPosts = [
-  {
-    id: '1',
-    author: 'Huey Magoos',
-    username: 'User1234',
-    avatar: require('@/assets/images/avatar.png'),
-    content:
-      "Hey everybody! I'm looking for places near UCF main campus to get food that won't break the bank. I usually eat at the student union but I'm getting sick of eating Huey Magoo's all the time.",
-    comments: [
-      { id: '1', username: 'RSO123', text: 'You can try Blaze or Bento. Both are great options!' },
-      { id: '2', username: 'Ilovecats', text: "I'll be there too!" },
-    ],
-    time: '5 hrs ago',
-  },
-  {
-    id: '2',
-    author: 'Am I Cooked?',
-    username: 'RSO123',
-    avatar: require('@/assets/images/avatar.png'),
-    content: 'Ice Cream Social\nMay 25th | 8:00pm | SU218C',
-    image: require('@/assets/images/ice-cream-event.png'),
-    comments: [{ id: '1', username: 'Ilovecats', text: "I'll be there!" }],
-    time: '10 hrs ago',
-  },
-  {
-    id: '3',
-    author: 'Knights United',
-    username: 'Knight123',
-    avatar: require('@/assets/images/avatar.png'),
-    content: 'Looking for study buddies for late-night cramming sessions!',
-    comments: [],
-    time: '3 hrs ago',
-  },
-];
-
-const trendingPosts = [
-  {
-    id: '1',
-    author: 'Huey Magoos',
-    content:
-      "Hey Everybody, I'm looking for places near UCF main campus to get food that won't break the bank. I usually eat at the student union but I'm getting sick of eating Huey Magoo's all the time!",
-    comments: [
-      { id: '1', username: 'RSO123', text: 'You can try Blaze or Bento. Great options!' },
-      { id: '2', username: 'Foodie', text: 'Try Lazy Moon for pizza!' },
-    ],
-  },
-];
-
-const discoverCommunities = [
-  'Psychology',
-  'Nursing',
-  'Engineering',
-  'Political Science',
-  'Digital Media',
-  'Computer Science',
-  'Biology',
-  'Graphic Design',
-  'Anthropology',
-];
-
-const discoverGroups = [
-  {
-    id: '1',
-    name: 'ROTC',
-    members: '3.6k members',
-    description:
-      'Army ROTC is a program designed to develop individual leadership skills for either military or civilian career.',
-  },
-  {
-    id: '2',
-    name: 'KQR',
-    members: '5.8k members',
-    description:
-      'KQR is Knights Experiential Robotics, a club for introducing Knights to real-world robotics.',
-  },
-  {
-    id: '3',
-    author: 'Knights United',
-    username: 'Knight123',
-    avatar: require('@/assets/images/avatar.png'),
-    content: 'Looking for study buddies for late-night cramming sessions!',
-    comments: [],
-    time: '3 hrs ago',
-  },
-];
+const API_URL = "http://localhost/api/";
 
 export default function ConnectionsScreen() {
-  const [activeTab, setActiveTab] = useState('Connections');
+  const [activeTab, setActiveTab] = useState("Connections"); // Toggle Tab
+  const [posts, setPosts] = useState([]); // Turn post into an array
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [userId, setUserId] = useState(null);
   const [expandedPostId, setExpandedPostId] = useState(null);
-  const [expandedTrendingId, setExpandedTrendingId] = useState(null);
+  const [comments, setComments] = useState({});
+  const [newComment, setNewComment] = useState("");
+  const [communities, setCommunities] = useState([]);
 
+  useEffect(() => {
+    fetchUser();
+    fetchPosts();
+    fetchCommunities();
+  }, []);
+
+  // Fetch user ID from AsyncStorage
+  const fetchUser = async () => {
+    const storedUser = await AsyncStorage.getItem("user");
+    if (storedUser) {
+      setUserId(JSON.parse(storedUser).id);
+    }
+  };
+
+  // Fetch posts from database
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get(`${API_URL}get_all_posts.php`);
+      console.log("Fetched Posts:", response.data);
+
+      if (response.data.success) {
+        setPosts(response.data.posts);
+      } else {
+        setError("No posts found.");
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+      setError("Failed to load posts.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch comments for a specific post
+  const fetchComments = async (postId) => {
+    try {
+      const response = await axios.get(`${API_URL}comments.php?post_id=${postId}`);
+      setComments((prev) => ({
+        ...prev,
+        [postId]: response.data.comments || [],
+      }));
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    }
+  };
+
+  // Fetch communities
+  const fetchCommunities = async () => {
+    try {
+      const response = await axios.get(`${API_URL}get_communities.php`);
+      console.log("Fetched Communities:", response.data);
+
+      if (response.data.success) {
+        setCommunities(response.data.communities);
+      } else {
+        setError("No communities found.");
+      }
+    } catch (error) {
+      console.error("Error fetching communities:", error);
+      setError("Failed to load communities.");
+    }
+  };
+
+  // Handle adding a new comment
+  const handleComment = async (postId) => {
+    if (!newComment.trim()) {
+      setError("Comment cannot be empty.");
+      return;
+    }
+
+    setError("");
+
+    try {
+      const response = await axios.post(`${API_URL}comments.php`, {
+        creator_id: userId,
+        post_id: postId,
+        content: newComment.trim(),
+      });
+
+      if (response.data.success) {
+        setNewComment("");
+        fetchComments(postId);
+      } else {
+        setError("Failed to add comment.");
+        console.log("Submitting comment:", {
+          user_id: userId,
+          post_id: postId,
+          content: newComment.trim(),
+        });
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      setError("Error adding comment. Try again.");
+    }
+  };
+
+  // Toggle comments section
   const toggleComments = (postId) => {
-    setExpandedPostId((prevId) => (prevId === postId ? null : postId));
+    setExpandedPostId(expandedPostId === postId ? null : postId);
+    fetchComments(postId);
   };
 
-  const toggleTrendingComments = (postId) => {
-    setExpandedTrendingId((prevId) => (prevId === postId ? null : postId));
-  };
-
-  const renderConnectionsPost = ({ item }) => (
-    <View style={styles.postContainer}>
-      <View style={styles.headerContainer}>
-        <Image source={item.avatar} style={styles.avatar} />
-        <View>
-          <Text style={styles.author}>{item.author}</Text>
-          <Text style={styles.username}>@{item.username}</Text>
-        </View>
+  const renderButtons = () => (
+    <ScrollView style={discoverStyles.groupScroll} horizontal={true} showsHorizontalScrollIndicator={true}>
+      <View style={discoverStyles.itemContainer}>
+        {Array.isArray(communities) && communities.length > 0 ? (
+          communities.map((community) => (
+              <TouchableOpacity
+                key={community.id}
+                style={discoverStyles.item}>
+                <Text style={discoverStyles.itemText}>
+                    {community.name}
+                </Text>
+              </TouchableOpacity>
+            ))
+            ) : (
+              <Text style={discoverStyles.error}>No communities available.</Text>
+         )}
       </View>
-      {item.image && <Image source={item.image} style={styles.postImage} />}
-      <Text style={styles.content}>{item.content}</Text>
-      <TouchableOpacity onPress={() => toggleComments(item.id)}>
-        <Text style={styles.commentsToggle}>
-          Comments ({item.comments.length})
-        </Text>
-      </TouchableOpacity>
-      {expandedPostId === item.id && (
-        <View style={styles.commentsContainer}>
-          {item.comments.map((comment) => (
-            <View key={comment.id} style={styles.comment}>
-              <Text style={styles.commentUsername}>{comment.username}</Text>
-              <Text style={styles.commentText}>{comment.text}</Text>
-            </View>
-          ))}
-          <TextInput
-            placeholder="Add a response"
-            style={styles.commentInput}
-            placeholderTextColor="#A0A0A0"
-          />
-        </View>
-      )}
-      <Text style={styles.footer}>{item.time}</Text>
-    </View>
+    </ScrollView>
   );
 
-  const renderDiscoverContent = () => (
-    <ScrollView style={discoverStyles.container}>
-      <Text style={discoverStyles.sectionTitle}>Explore Communities</Text>
-      <View style={discoverStyles.listContainer}>
-        {discoverCommunities.map((item, index) => (
-          <TouchableOpacity key={index} style={discoverStyles.item}>
-            <Text style={discoverStyles.itemText}>{item}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <Text style={discoverStyles.sectionTitle}>Based on Groups You Might Like</Text>
-      {discoverGroups.map((group) => (
-        <View key={group.id} style={discoverStyles.card}>
-          <View style={discoverStyles.iconContainer}>
-            <View style={discoverStyles.icon}>
-              <Text style={discoverStyles.iconText}>👤</Text>
+  const renderCommunities = () => (
+    <View style={discoverStyles.groupContainer}>
+    <ScrollView style={discoverStyles.groupScroll} nestedScrollEnabled={true}>
+      {posts.map((item) => (
+        <View key={item.id} style={discoverStyles.groupCard}>
+          <View>
+            <View style={discoverStyles.groupHeader} >
+              <Text style={discoverStyles.groupName}>{item.community_name}</Text>
+              <TouchableOpacity style={discoverStyles.groupButton}> 
+                <Text style={discoverStyles.groupText}> Join </Text>
+              </TouchableOpacity>
             </View>
           </View>
-          <View style={discoverStyles.infoContainer}>
-            <Text style={discoverStyles.groupName}>
-              {group.name} <Text style={discoverStyles.members}>{group.members}</Text>
-            </Text>
-            <Text style={discoverStyles.description}>{group.description}</Text>
-          </View>
-          <TouchableOpacity style={discoverStyles.joinButton}>
-            <Text style={discoverStyles.joinButtonText}>Join</Text>
-          </TouchableOpacity>
-        </View>
-      ))}
-      <Text style={discoverStyles.sectionTitle}>Trending</Text>
-      {trendingPosts.map((post) => (
-        <View key={post.id} style={discoverStyles.trendingCard}>
-          <Text style={discoverStyles.trendingUser}>{post.author}</Text>
-          <Text style={discoverStyles.trendingText}>{post.content}</Text>
-          <TouchableOpacity onPress={() => toggleTrendingComments(post.id)}>
-            <Text style={discoverStyles.trendingComments}>
-              Comments ({post.comments.length})
-            </Text>
-          </TouchableOpacity>
-          {expandedTrendingId === post.id && (
-            <View style={styles.commentsContainer}>
-              {post.comments.map((comment) => (
-                <View key={comment.id} style={styles.comment}>
-                  <Text style={styles.commentUsername}>{comment.username}</Text>
-                  <Text style={styles.commentText}>{comment.text}</Text>
-                </View>
-              ))}
-              <TextInput
-                placeholder="Add a response"
-                style={styles.commentInput}
-                placeholderTextColor="#A0A0A0"
-              />
-            </View>
-          )}
+          <Text style={discoverStyles.content}> {item.description} </Text>
+          <Text style={discoverStyles.content}> This is our group and you can join and be apart of it because I know that's what you want to do. </Text>
         </View>
       ))}
     </ScrollView>
+  </View>
+);
+
+const renderPosts = () => (
+  <FlatList
+      data={posts}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.postContainer}>
+          <View style={styles.headerContainer}>
+            <Image
+              source={{ uri: item.avatar_url || "https://via.placeholder.com/50" }}
+              style={styles.avatar}
+            />
+            <View>
+              <Text style={styles.author}>{item.first_name} {item.last_name}</Text>
+              <Text style={styles.username}>{item.community_name}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.content}>{item.content}</Text>
+
+          <TouchableOpacity onPress={() => toggleComments(item.id)}>
+            <Text style={styles.commentsToggle}>
+              Comments ({comments?.[item.id]?.length || 0})
+            </Text>
+          </TouchableOpacity>
+
+          {error ? <Text style={discoverStyles.error}>{error}</Text> : null}
+        
+          {expandedPostId === item.id && (
+            <View style={styles.commentsContainer}>
+              {comments?.[item.id]?.length > 0 ? (
+                comments[item.id].map((comment) => (
+                  <View key={comment.comment_id} style={styles.comment}>
+                    <Image
+                      source={{ uri: comment.avatar_url || "https://via.placeholder.com/40" }}
+                      style={styles.commentAvatar}
+                    />
+                    <View>
+                      <Text style={styles.commentAuthor}>
+                        {comment.first_name} {comment.last_name}
+                      </Text>
+                      <Text style={styles.commentText}>{comment.content}</Text>
+                      <Text style={styles.commentTime}>{new Date(comment.created_at).toLocaleString()}</Text>
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noCommentsText}>No comments yet.</Text>
+              )}
+
+              <View style={styles.commentInputContainer}>
+                <TextInput
+                  placeholder="Add a comment..."
+                  value={newComment}
+                  onChangeText={setNewComment}
+                  style={styles.commentInput}
+                />
+                <TouchableOpacity onPress={() => handleComment(item.id)} style={styles.commentButton}>
+                  <Text style={styles.commentButtonText}>Comment</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+
+          <Text style={styles.footer}>Posted on: {new Date(item.created_at).toDateString()}</Text>
+        </View>
+      )}
+    />
+); 
+
+  const renderConnections = () => (
+    <View>
+      {renderPosts()}
+    </View>
+  );
+
+  const renderDiscover = () => (
+    <View style={discoverStyles.container}>
+      <Text style={discoverStyles.sectionTitle}>Explore Communities</Text>
+      {renderButtons()}
+
+      <Text style={discoverStyles.sectionTitle}>Groups You Might Like</Text>
+      {renderCommunities()}
+
+      <Text style={discoverStyles.sectionTitle}> Trending Posts </Text>
+      {renderPosts()}
+
+      {error ? <Text style={discoverStyles.error}>{error}</Text> : null}
+    </View>
   );
 
   return (
     <ScrollView style={styles.container}>
       <KQLogo path="app/(tabs)/connections.tsx" />
-      <View style={styles.header}>
-        <View style={styles.tabContainer}>
-          <TouchableOpacity onPress={() => setActiveTab('Connections')}>
-            <Text style={[styles.tab, activeTab === 'Connections' && styles.activeTab]}>Connections</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => setActiveTab('Discover')}>
-            <Text style={[styles.tab, activeTab === 'Discover' && styles.activeTab]}>Discover</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.tabContainer}>
+        <TouchableOpacity onPress={() => setActiveTab("Connections")}>
+          <Text style={[styles.tab, activeTab === "Connections" && styles.activeTab]}>Connections</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setActiveTab("Discover")}>
+          <Text style={[styles.tab, activeTab === "Discover" && styles.activeTab]}>Discover</Text>
+        </TouchableOpacity>
       </View>
-      {activeTab === 'Connections' ? (
-        <FlatList
-          data={connectionsPosts}
-          renderItem={renderConnectionsPost}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
-        />
-      ) : (
-        renderDiscoverContent()
-      )}
+      {activeTab === "Connections" ? renderConnections() : renderDiscover()}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    flex: 1,
+    backgroundColor: "#fff",
     paddingTop: 50,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 10,
+    paddingHorizontal: 20,
   },
   tabContainer: {
-    flexDirection: 'row',
-    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   tab: {
     fontSize: 16,
-    marginHorizontal: 10,
-    color: '#A0A0A0',
+    fontWeight: "bold",
+    color: "#555",
   },
   activeTab: {
-    fontWeight: 'bold',
-    color: '#000',
+    color: "#000",
+    borderBottomWidth: 2,
+    borderBottomColor: "#000",
   },
-  listContainer: {
-    paddingBottom: 20,
-  },
+
+  // Styling for Posts
   postContainer: {
-    backgroundColor: '#FFFBEA',
-    padding: 15,
+    backgroundColor: "#FFF8E1",
+    padding: 12,
     borderRadius: 10,
-    marginBottom: 15,
+    marginBottom: 10,
+    elevation: 3,
   },
   headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  author: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  username: {
+    fontSize: 14,
+    color: "#888",
+  },
+  content: {
+    fontSize: 16,
+    marginTop: 10,
+  },
+
+  // Styling for Comments 
+  commentsToggle: {
+    color: "#007BFF",
+    marginTop: 10,
+    fontSize: 14,
+  },
+  commentsContainer: {
+    backgroundColor: "#F9F9F9",
+    padding: 12,
+    borderRadius: 10,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#ddd", 
+  },
+  comment: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
+  },
+  commentAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: 10,
   },
-  author: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  commentContent: {
+    flex: 1, // Ensures text doesn't overflow
   },
-  username: {
+  commentAuthor: {
     fontSize: 14,
-    color: '#888',
-  },
-  postImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: 10,
-    marginVertical: 10,
-  },
-  content: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  commentsToggle: {
-    fontSize: 12,
-    color: '#A0A0A0',
-    marginBottom: 10,
-  },
-  commentsContainer: {
-    padding: 10,
-    backgroundColor: '#FFFBEA',
-    borderRadius: 8,
-  },
-  comment: {
-    marginBottom: 10,
-  },
-  commentUsername: {
-    fontWeight: 'bold',
-    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
   },
   commentText: {
     fontSize: 14,
-    color: '#555',
+    color: "#555",
+    marginTop: 2,
   },
-  commentInput: {
+  commentTime: {
+    fontSize: 12,
+    color: "#888",
+    marginTop: 3,
+  },
+  noCommentsText: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#666",
+    marginVertical: 10,
+  },
+  commentInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
+    borderColor: "#ddd",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  commentInput: {
+    flex: 1,
     padding: 10,
     fontSize: 14,
+    color: "#333",
+    width: "90%",
   },
-  footer: {
+  commentButton: {
+    padding: 10,
+    fontSize: 14,
+    color: "#333",
+  },
+  commentButtonText: {
     fontSize: 12,
-    color: '#888',
   },
 });
 
 const discoverStyles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#FFFFFF',
+    flex: 1,
+    backgroundColor: "#fff",
+    paddingTop: 40,
     paddingHorizontal: 20,
-    paddingTop: 50,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 20,
     marginBottom: 10,
+    textAlign: "left",
   },
-  listContainer: {
+
+  // Styling for Community Buttons 
+  communityContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  communityButton: {
+    backgroundColor: "#FFD700",
+    borderRadius: 15,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginRight: 10,
+    marginBottom: 10,
+    alignSelf: "flex-start",
+  },
+  communityText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000",
+  },
+
+  // Styling for Community Groups
+  groupContainer: {
+    width: "100%", 
+    height: 150, // Height must be fixed
+  },
+  groupScroll: {
+    flexGrow: 1, // allows scrolling  to work inside fixed height
+  },
+  groupCard: {
+    borderRadius: 20,
+    borderColor: "black",
+    borderWidth: 1,
+    padding: 15,
+    marginBottom: 10,
+  },
+  groupHeader: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  groupName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  groupButton: {
+    backgroundColor: "blue",
+    borderRadius: 5,
+    width: 50,
+    height: 25,
+  },
+  groupText: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: "#fff",
+    textAlign: "center",
+  },
+  
+  // Styling for Posts
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
+  },
+  author: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  content: {
+    fontSize: 16,
+    marginTop: 10,
+  },
+  footer: {
+    fontSize: 12,
+    color: "#888",
+    marginTop: 10,
+  },
+  
+  // Styling for Buttons 
+  itemContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
     gap: 10,
   },
   item: {
@@ -356,82 +516,28 @@ const discoverStyles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-start',
   },
+  selectedItem: {
+    backgroundColor: "#FF8C00", // Highlight selected button
+  },
   itemText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#000',
   },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
+  selectedItemText: {
+    color: "#FFF", // Change text color when selected
   },
-  iconContainer: {
-    marginRight: 15,
-  },
-  icon: {
-    backgroundColor: '#E0D6FF',
-    borderRadius: 50,
-    height: 40,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconText: {
-    fontSize: 20,
-    color: '#7F56D9',
-  },
-  infoContainer: {
-    flex: 1,
-  },
-  groupName: {
+  selectedText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontWeight: "bold",
+    color: "#555",
+    textAlign: "center",
+    marginTop: 10,
   },
-  members: {
-    fontSize: 12,
-    fontWeight: 'normal',
-    color: '#6E6E6E',
-  },
-  description: {
-    fontSize: 14,
-    color: '#6E6E6E',
-  },
-  joinButton: {
-    backgroundColor: '#007BFF',
-    borderRadius: 20,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    alignSelf: 'flex-start',
-  },
-  joinButtonText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  trendingCard: {
-    padding: 15,
-    backgroundColor: '#FFFBEA',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
-  trendingUser: {
-    fontWeight: 'bold',
-    fontSize: 14,
-    marginBottom: 5,
-  },
-  trendingText: {
-    fontSize: 14,
-    marginBottom: 10,
-  },
-  trendingComments: {
-    fontSize: 12,
-    color: '#A0A0A0',
+  error: {
+    color: "red",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 10,
   },
 });
