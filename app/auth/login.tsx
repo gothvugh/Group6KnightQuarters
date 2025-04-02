@@ -1,17 +1,25 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from 'expo-router';
 import axios from "axios";
 import KQLogo from '@/components/KQLogo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://www.knightquarters.com/api/login.php";
+const API_URL = "https://10.123.98.121/api/login.php";
+const router = useRouter();
 
 export default function LoginScreen() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log("Manual navigation test...");
+    // Just to test routing works
+    setTimeout(() => {
+      router.replace("/(tabs)/connections");
+    }, 2000);
+  }, []);
 
   // Authorizes user based on user id and saves data to AsyncStorage 
   const handleLogin = async () => {
@@ -23,7 +31,7 @@ export default function LoginScreen() {
     }
 
     try {
-      const response = await axios.post(API_URL, {
+      const response = await axios.post(`${API_URL}`, {
         email,
         password,
       }, {
@@ -37,9 +45,11 @@ export default function LoginScreen() {
 
       // Store user data in AsyncStorage
       await AsyncStorage.setItem("user", JSON.stringify(user));
-
       console.log("User saved:", user);
-      router.replace("/(tabs)/connections"); // Redirect to Connections
+
+      console.log("About to navigate to /connections...");
+      router.replace("/(tabs)/connections");
+
     } else {
       setError(response.data.message);
     }

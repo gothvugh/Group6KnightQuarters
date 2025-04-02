@@ -4,7 +4,7 @@ import KQLogo from '@/components/KQLogo';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://www.knightquarters.com/api";
+const API_URL = "https://10.123.98.121/api";
 
 export default function ConnectionsScreen() {
   const [activeTab, setActiveTab] = useState("Connections"); // Toggle Tab
