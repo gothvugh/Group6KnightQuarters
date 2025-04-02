@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import KQLogo from "@/components/KQLogo";
 import axios from "axios";
 
-const API_URL = "http://localhost/api/update_profile.php"; // Change to your local IP
+const API_URL = "https://www.knightquarters.com/api/update_profile.php";
 
 export default function ProfileSetupScreen() {
   const router = useRouter();

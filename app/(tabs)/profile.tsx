@@ -10,7 +10,7 @@ export default function ProfileScreen() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Load user data from AsyncStorage
+    // Get user data from AsyncStorage
     const loadUser = async () => {
       const userData = await AsyncStorage.getItem("user");
       if (userData) {

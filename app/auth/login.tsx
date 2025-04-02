@@ -5,7 +5,7 @@ import axios from "axios";
 import KQLogo from '@/components/KQLogo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "http://localhost:8888/login.php";; // Use your local IP
+const API_URL = "https://www.knightquarters.com/api/login.php";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -13,6 +13,7 @@ export default function LoginScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Authorizes user based on user id and saves data to AsyncStorage 
   const handleLogin = async () => {
     setError(""); // Clear previous errors
 

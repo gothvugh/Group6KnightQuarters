@@ -4,7 +4,7 @@ import KQLogo from '@/components/KQLogo';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "http://localhost/api/";
+const API_URL = "https://www.knightquarters.com/api";
 
 export default function ConnectionsScreen() {
   const [activeTab, setActiveTab] = useState("Connections"); // Toggle Tab
@@ -23,7 +23,7 @@ export default function ConnectionsScreen() {
     fetchCommunities();
   }, []);
 
-  // Fetch user ID from AsyncStorage
+  // Get user ID from AsyncStorage
   const fetchUser = async () => {
     const storedUser = await AsyncStorage.getItem("user");
     if (storedUser) {
@@ -31,10 +31,10 @@ export default function ConnectionsScreen() {
     }
   };
 
-  // Fetch posts from database
+  // Get posts from database
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`${API_URL}get_all_posts.php`);
+      const response = await axios.get(`${API_URL}/get_all_posts.php`);
       console.log("Fetched Posts:", response.data);
 
       if (response.data.success) {
@@ -50,10 +50,10 @@ export default function ConnectionsScreen() {
     }
   };
 
-  // Fetch comments for a specific post
+  // Get a post's comments based on post id
   const fetchComments = async (postId) => {
     try {
-      const response = await axios.get(`${API_URL}comments.php?post_id=${postId}`);
+      const response = await axios.get(`${API_URL}/comments.php?post_id=${postId}`);
       setComments((prev) => ({
         ...prev,
         [postId]: response.data.comments || [],
@@ -63,10 +63,10 @@ export default function ConnectionsScreen() {
     }
   };
 
-  // Fetch communities
+  // Get communities
   const fetchCommunities = async () => {
     try {
-      const response = await axios.get(`${API_URL}get_communities.php`);
+      const response = await axios.get(`${API_URL}/get_communities.php`);
       console.log("Fetched Communities:", response.data);
 
       if (response.data.success) {
@@ -80,7 +80,7 @@ export default function ConnectionsScreen() {
     }
   };
 
-  // Handle adding a new comment
+  // Post a new comment
   const handleComment = async (postId) => {
     if (!newComment.trim()) {
       setError("Comment cannot be empty.");
@@ -90,8 +90,8 @@ export default function ConnectionsScreen() {
     setError("");
 
     try {
-      const response = await axios.post(`${API_URL}comments.php`, {
-        creator_id: userId,
+      const response = await axios.post(`${API_URL}/comments.php`, {
+        user_id: userId,
         post_id: postId,
         content: newComment.trim(),
       });
@@ -102,7 +102,7 @@ export default function ConnectionsScreen() {
       } else {
         setError("Failed to add comment.");
         console.log("Submitting comment:", {
-          user_id: userId,
+          creator_id: userId,
           post_id: postId,
           content: newComment.trim(),
         });
@@ -184,8 +184,6 @@ const renderPosts = () => (
               Comments ({comments?.[item.id]?.length || 0})
             </Text>
           </TouchableOpacity>
-
-          {error ? <Text style={discoverStyles.error}>{error}</Text> : null}
         
           {expandedPostId === item.id && (
             <View style={styles.commentsContainer}>
@@ -207,7 +205,10 @@ const renderPosts = () => (
                 ))
               ) : (
                 <Text style={styles.noCommentsText}>No comments yet.</Text>
+                
               )}
+
+              {error ? <Text style={discoverStyles.error}>{error}</Text> : null}        
 
               <View style={styles.commentInputContainer}>
                 <TextInput
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
   },
   commentsContainer: {
     backgroundColor: "#F9F9F9",
-    padding: 12,
+    padding: 10,
     borderRadius: 10,
     marginTop: 10,
     borderWidth: 1,
@@ -410,7 +411,7 @@ const discoverStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingTop: 40,
+    paddingTop: 50,
     paddingHorizontal: 20,
   },
   sectionTitle: {

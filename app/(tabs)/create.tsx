@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "http://localhost/api/"; // Replace with your actual local IP
+const API_URL = "https://www.knightquarters.com/api"; 
 
 export default function CreatePostScreen() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function CreatePostScreen() {
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
-    // Fetch user ID from AsyncStorage
+    // Get user ID from AsyncStorage
     const loadUser = async () => {
       const userData = await AsyncStorage.getItem("user");
       if (userData) {
@@ -27,10 +27,10 @@ export default function CreatePostScreen() {
       }
     };
 
-    // Fetch communities from the database
+    // Get communities 
     const fetchCommunities = async () => {
       try {
-        const response = await axios.get(`${API_URL}get_communities.php`);
+        const response = await axios.get(`${API_URL}/get_communities.php`);
         
         console.log("API Response:", response.data.communities); // Debugging
 
@@ -51,11 +51,12 @@ export default function CreatePostScreen() {
     fetchCommunities();
   }, []);
 
-  // More Debugging
-  useEffect(() => {
+  // Debugging
+  /* useEffect(() => {
     console.log("Updated Communities:", communities);
-  }, [communities]);
+  }, [communities]); */
 
+  // Create Post
   const handlePost = async () => {
     setError(""); // Clear previous errors
 
@@ -74,23 +75,22 @@ export default function CreatePostScreen() {
       return;
     }
 
-    console.log("Sending to API:", { user_id: userId, content: postContent.trim(), community_id: selectedCommunity }); // Debugging
+    /* console.log("Sending to API:", { user_id: userId, content: postContent.trim(), community_id: selectedCommunity }); // Debugging */
 
 
     try {
-      const response = await axios.post(`${API_URL}create_post.php`, {
+      const response = await axios.post(`${API_URL}/create_post.php`, {
         user_id: userId,
         content: postContent.trim(),
         community_id: selectedCommunity,
       }, {
-        headers: { "Content-Type": "application/json" } // Ensure Axios is sending the corrent content-type 
+        headers: { "Content-Type": "application/json" } // sending the corrent content-type; debugging
       })
 
 
       if (response.data.success) {
-        setError(""); // Clear Error
-        setPostContent(""); // Clear Input Box
-        // setSelectedCommunity(null) 
+        setError(""); 
+        setPostContent(""); // Clear Input Box 
         router.replace("/(tabs)/connections"); 
       } else {
         setError(response.data.message);

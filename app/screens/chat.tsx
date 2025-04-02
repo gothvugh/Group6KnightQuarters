@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from 'axios';
 import KQLogo from '@/components/KQLogo';
 
-const API_USERS_URL = "http://localhost:8888/get_users.php"; // Replace with actual backend URL
+const API_USERS_URL = "https://www.knightquarters.com/api/get_users.php"; 
 
 export default function ChatScreen() {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      <KQLogo />
+      <KQLogo path="app/screens/chat.tsx"  />
       {isNew ? (
         <>
           <Text style={styles.header}>Select a User</Text>

@@ -7,7 +7,7 @@ import KQLogo from "@/components/KQLogo";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "http://localhost/api/";
+const API_URL = "https://www.knightquarters.com/api";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -19,6 +19,7 @@ export default function SearchScreen() {
   const [newComment, setNewComment] = useState("");
   const [userId, setUserId] = useState(null);
 
+  // Get user ID from AsyncStorage
   useEffect(() => {
     const fetchUser = async () => {
       const storedUser = await AsyncStorage.getItem("user");
@@ -29,6 +30,7 @@ export default function SearchScreen() {
     fetchUser();
   }, []);
 
+  // Get a post's comments based on post id
   const fetchComments = async (postId) => {
     try {
       const response = await axios.get(`${API_URL}/comments.php?post_id=${postId}`);
@@ -41,6 +43,7 @@ export default function SearchScreen() {
     }
   };
 
+  // Verifies the search bar isn't empty
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
       setError("No results. Try a different search.");
@@ -50,6 +53,7 @@ export default function SearchScreen() {
 
     setError("");
 
+    // Gets posts based on keywords from search query 
     try {
       const response = await axios.get(`${API_URL}/get_search.php?query=${encodeURIComponent(searchQuery)}`);
       if (response.data.success) {
@@ -68,15 +72,17 @@ export default function SearchScreen() {
     fetchComments(postId);
   };
 
+  // Verify the comment input isn't empty
   const handleComment = async (postId) => {
     if (!newComment.trim()) {
       setError("Comment cannot be empty.");
       return;
     }
 
-    console.log("New Comment:", newComment);
-    setError("");
+    /* console.log("New Comment:", newComment);
+    setError(""); */
 
+    // Post a new comment to the database
     try {
       const response = await axios.post(`${API_URL}/comments.php`, {
         user_id: userId,
@@ -113,9 +119,6 @@ export default function SearchScreen() {
           <Ionicons name="search" size={20} color="#A0A0A0" style={styles.searchIcon} />
         </TouchableOpacity>
       </View>
-
-      {/* Error Message */}
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       {/* Search Results */}
       <FlatList
@@ -167,6 +170,9 @@ export default function SearchScreen() {
                 ) : (
                   <Text style={styles.noCommentsText}>No comments yet.</Text>
                 )}
+
+                {/* Error Message */}
+                  {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
                 {/* Comment Input */}
                 <View style={styles.commentInputContainer}>

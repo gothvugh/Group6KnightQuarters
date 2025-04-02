@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { useRouter } from 'expo-router';
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "http://localhost:8888/register.php"; // Use your local IP
+const API_URL = "https://www.knightquarters.com/api/register.php";
 
 export default function SignupScreen() {
   const router = useRouter();
@@ -14,9 +14,11 @@ export default function SignupScreen() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Registers new user 
   const handleRegister = async () => {
     setError(""); // Clear previous errors
 
+    // Validation for registration
     if (!first_name.trim() || !last_name.trim() || !email.trim() || !password.trim()) {
       setError("All fields are required.");
       return;
