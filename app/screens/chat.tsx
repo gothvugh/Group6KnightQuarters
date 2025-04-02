@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import axios from 'axios';
 import KQLogo from '@/components/KQLogo';
 
-const API_USERS_URL = "https://10.123.98.121api/get_users.php"; 
+const API_USERS_URL = "http://10.123.98.121api/get_users.php"; 
 
 export default function ChatScreen() {
   const router = useRouter();

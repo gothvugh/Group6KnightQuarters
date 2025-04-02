@@ -7,7 +7,7 @@ import KQLogo from "@/components/KQLogo";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://10.123.98.121/api";
+const API_URL = "http://10.123.98.121/api";
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -51,13 +51,12 @@ export default function SearchScreen() {
       return;
     }
 
-    setError("");
-
     // Gets posts based on keywords from search query 
     try {
       const response = await axios.get(`${API_URL}/get_search.php?query=${encodeURIComponent(searchQuery)}`);
       if (response.data.success) {
         setSearchResults(response.data.posts);
+        setError("");
       } else {
         setError("No matching posts found.");
       }
@@ -120,6 +119,8 @@ export default function SearchScreen() {
         </TouchableOpacity>
       </View>
 
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
       {/* Search Results */}
       <FlatList
         data={searchResults}
@@ -170,9 +171,6 @@ export default function SearchScreen() {
                 ) : (
                   <Text style={styles.noCommentsText}>No comments yet.</Text>
                 )}
-
-                {/* Error Message */}
-                  {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
                 {/* Comment Input */}
                 <View style={styles.commentInputContainer}>

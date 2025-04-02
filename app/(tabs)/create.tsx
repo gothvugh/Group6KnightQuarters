@@ -6,7 +6,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "https://10.123.98.121/api"; 
+const API_URL = "http://10.123.98.121/api"; 
 
 export default function CreatePostScreen() {
   const router = useRouter();

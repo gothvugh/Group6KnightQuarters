@@ -7,7 +7,7 @@ import { useRouter } from 'expo-router';
 import axios from 'axios';
 import KQLogo from '@/components/KQLogo';
 
-const API_URL = "https://10.123.98.121/api/messages/get_messages.php";
+const API_URL = "http://10.123.98.121/api/messages/get_messages.php";
 
 export default function MessagesScreen() {
   const [messages, setMessages] = useState([]);
@@ -52,7 +52,7 @@ export default function MessagesScreen() {
     };
 
     fetchMessages();
-  }, []);
+  }, []);eas
 
   const handlePressMessage = (item) => {
     router.push({

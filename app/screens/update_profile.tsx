@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import KQLogo from "@/components/KQLogo";
 import axios from "axios";
 
-const API_URL = "https://10.123.98.121/api/update_profile.php";
+const API_URL = "http://10.123.98.121/api/update_profile.php";
 
 export default function ProfileSetupScreen() {
   const router = useRouter();

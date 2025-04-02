@@ -5,21 +5,13 @@ import axios from "axios";
 import KQLogo from '@/components/KQLogo';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = "https://10.123.98.121/api/login.php";
+const API_URL = "http://10.123.98.121/api/login.php";
 const router = useRouter();
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    console.log("Manual navigation test...");
-    // Just to test routing works
-    setTimeout(() => {
-      router.replace("/(tabs)/connections");
-    }, 2000);
-  }, []);
 
   // Authorizes user based on user id and saves data to AsyncStorage 
   const handleLogin = async () => {
@@ -46,8 +38,6 @@ export default function LoginScreen() {
       // Store user data in AsyncStorage
       await AsyncStorage.setItem("user", JSON.stringify(user));
       console.log("User saved:", user);
-
-      console.log("About to navigate to /connections...");
       router.replace("/(tabs)/connections");
 
     } else {
